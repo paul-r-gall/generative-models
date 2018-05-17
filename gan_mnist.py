@@ -13,7 +13,11 @@ X_dim = mnist.train.images.shape[1]
 y_dim = mnist.train.labels.shape[1]
 h_dim = 128
 lr = 1e-3
+eps = 1e-8
 
+def log(x):
+	return tf.log(x+eps)
+	
 def plot(samples):
     fig = plt.figure(figsize=(4, 4))
     gs = gridspec.GridSpec(4, 4)
@@ -84,8 +88,8 @@ _, X_samples = G(z)
 D_real = D(X)
 D_fake = D(prob)
 
-D_loss = -tf.reduce_mean(tf.log(D_real)+tf.log(1-D_fake))
-G_loss = -tf.reduce_mean(tf.log(D_fake))
+D_loss = -tf.reduce_mean(log(D_real)+log(1-D_fake))
+G_loss = -tf.reduce_mean(log(D_fake))
 
 G_solver = tf.train.AdamOptimizer().minimize(G_loss, var_list = G_vars)
 D_solver = tf.train.AdamOptimizer().minimize(D_loss, var_list = D_vars)
